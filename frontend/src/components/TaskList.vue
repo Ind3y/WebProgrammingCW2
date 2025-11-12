@@ -10,7 +10,7 @@
             </span>
 
             <div class="d-flex justify-content-between">
-                <button class ="btn btn-sm btn-success">
+                <button class ="btn btn-sm btn-success" @click="taskCompleteUndoButton(task)">
                     {{ task.completed ? 'Undo' : 'Complete' }}
                 </button>
             </div>
@@ -21,5 +21,12 @@
 <script>
     export default{
         props: ['tasks'],
+        emits: ["task-complete-undo"],
+        methods: {
+            taskCompleteUndoButton(task) {
+                this.$emit("task-complete-undo", task);
+            }
+        }
+
     };
 </script>

@@ -2,11 +2,11 @@
     <div class = "bg-light">
         <Navbar />
         <div>
-            <TaskList :tasks="tasks" />
+            <TaskList :tasks="tasks" @task-complete-undo="completeUndoTask"/>
         </div>
         <pre>{{ tasks }}</pre>
     </div>
-  </template>
+</template>
   
 <script>
     import Navbar from './components/Navbar.vue';
@@ -24,9 +24,21 @@
             }
         },
         async mounted() {
-            const response = await fetch('http://localhost:8000/api/todo.json');
+            const response = await fetch('http://localhost:8000/api/tasks/');
             const data = await response.json();
-            this.tasks = data.toDos;
+            this.tasks = data.tasks;
+        },
+
+        methods: {
+            async completeUndoTask(task){
+                const response = await fetch(`http://localhost:8000/api/tasks/${task.id}/`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        completed: !task.completed
+                    })
+                });
+            }
+        
         }
     }
 </script>

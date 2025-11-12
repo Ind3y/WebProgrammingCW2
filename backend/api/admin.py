@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import to_Do
+from .models import Tasks
 
 # Register your models here.
 
-admin.site.register(to_Do)
+admin.site.register(Tasks)

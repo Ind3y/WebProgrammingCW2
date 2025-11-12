@@ -15,10 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import toDo_api_view
+from .views import tasks_api, task_api
 
 
 urlpatterns = [
     # API entry points should be defined here
-    path('todo.json', toDo_api_view, name='api test')
+    path('tasks/', tasks_api, name='tasks_api'),
+    path('tasks/<int:task_id>/', task_api, name='task_api'),
 ]
