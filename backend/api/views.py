@@ -24,7 +24,7 @@ def tasks_api(request):
             {
                 'id': step.id,
                 'task_id': step.task.id,
-                'decription': step.decription,
+                'description': step.description,
                 'completed': step.completed
             }
             for step in steps
@@ -110,3 +110,46 @@ def update_task_api(request, task_id):
 
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+@csrf_exempt
+def create_step_api(request, task_id):
+    try:
+        task = Tasks.objects.get(id=task_id)
+    except Tasks.DoesNotExist:
+        return JsonResponse({'error': 'Task not found'}, status=404)
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        description = data.get('description', '')
+
+        step = Steps.objects.create(task=task, description=description)
+
+    return JsonResponse({
+        'id': step.id,
+        'task_id': step.task.id,
+        'description': step.description,
+        'completed': step.completed
+    })
+
+@csrf_exempt
+def step_api(request, step_id):
+    try:
+        step = Steps.objects.get(id=step_id)
+    except Steps.DoesNotExist:
+        return JsonResponse({'error': 'Step not found'}, status=404)
+
+    if request.method == 'DELETE':
+        step.delete()
+        return JsonResponse({'message': 'Step deleted successfully'})
+    elif request.method == 'PUT':
+        data = json.loads(request.body)
+        step.completed = data.get('completed', step.completed)
+        step.save()
+        return JsonResponse({
+            'id': step.id,
+            'task_id': step.task.id,
+            'description': step.description,
+            'completed': step.completed
+        })
+    return JsonResponse({'message': 'Invalid request method'}, status=400)  
+
+        

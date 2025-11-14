@@ -13,5 +13,5 @@ class Tasks(models.Model):
     
 class Steps(models.Model):
     task = models.ForeignKey(Tasks, related_name='steps', on_delete=models.CASCADE)
-    decription = models.CharField(max_length=300)
+    description = models.CharField(max_length=300)
     completed = models.BooleanField(default=False)
