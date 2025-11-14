@@ -15,11 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import tasks_api, task_api
+from .views import tasks_api, task_api, create_task_api, update_task_api
 
 
 urlpatterns = [
     # API entry points should be defined here
     path('tasks/', tasks_api, name='tasks_api'),
     path('tasks/<int:task_id>/', task_api, name='task_api'),
+    path('tasks/update/<int:task_id>/', update_task_api, name='update_task_api'),
+    path('tasks/create/', create_task_api, name='create_task_api'),
 ]
