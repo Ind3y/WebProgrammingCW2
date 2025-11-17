@@ -14,6 +14,10 @@
                     @task-complete-undo="completeUndoTask" 
                     @delete-task="deleteTask" 
                     @update-task="updateTask"
+                    @add-step="addSteps"
+                    @delete-step="deleteStep"
+                    @complete-undo-step="completeUndoStep"
+
                     
                 />
 
@@ -163,6 +167,7 @@
             },
 
             async addSteps(step){
+                console.log("Emitted add-step received in App.vue");
                 console.log("Adding step:", step);
                 const response =  await fetch(`http://localhost:8000/api/tasks/${step.taskId}/steps/`, {
                     method: 'POST',
