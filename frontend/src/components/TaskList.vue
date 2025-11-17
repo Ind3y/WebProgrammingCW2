@@ -7,8 +7,6 @@
                     type="button" 
                     data-bs-toggle="collapse" 
                     :data-bs-target="'#task-' + task.id" 
-                    aria-expanded="false" 
-                    :aria-controls="'task-' + task.id"
                 >
                     <div class="justify-content-between">
                         <span :class="{ 'text-decoration-line-through text-muted': task.completed } " style="cursor: pointer;">
@@ -28,7 +26,7 @@
                 :id="'task-' + task.id" 
                 class="accordion-collapse collapse" 
                 :aria-labelledby="'heading-' + task.id" 
-                data-bs-parent="#task-accordian"
+
             >
                 <div class="accordion-body">
                     <input 
@@ -54,10 +52,10 @@
                         ></textarea>
                     </div>
                     <div class ="d-flex align-items-center mt-3 gap-2">
-                        <button class ="btn btn-sm btn-success" @click="taskCompleteUndoButton(task)">
+                        <button class ="btn btn-sm btn-success" data-bs-toggle="collapse" :data-bs-target="'#task-' + task.id"  @click="taskCompleteUndoButton(task)">
                             {{ task.completed ? 'Undo' : 'Complete' }}
                         </button>
-                        <button class="btn bg-primary btn-sm" @click="updateTask(task)">
+                        <button class="btn bg-primary btn-sm" data-bs-toggle="collapse" :data-bs-target="'#task-' + task.id" @click="updateTask(task)">
                             <p class="text-white mb-0"> Save changes </p>
                         </button>
                         <button class="btn bg-danger btn-sm"  data-bs-toggle="modal" data-bs-target="#task-deletion" @click="deletingTask = task">

@@ -1,13 +1,10 @@
 <template>
     <div >
-        <Navbar @Toggle-add-task="showAddTask"/>
+        <Navbar 
+            @add-task="postNewTask" 
+        />
         <div class="d-flex" >
             <div class="left-panel flex-fill">
-                <AddTask 
-                    v-if = "openAddTask" 
-                    @add-task="postNewTask" 
-                    @close-add-task="closeAddTask"
-                />
                 <TaskList 
                     :tasks="tasks"
                     :steps="steps"
@@ -23,33 +20,19 @@
 
             </div>
 
-            <!-- <div class="right-panel w-25" v-if="toggleTaskPanel">
-                <TaskPanel 
-                    :task="selectedTask"
-                    :steps="steps" 
-                    @toggle-info-panel = "showTaskPanel"
-                    @save-task="updateTask"
-                    @add-step="addSteps"
-                    @delete-step="deleteStep"
-                    @complete-undo-step="completeUndoStep"/>
-            </div> -->
         </div>
-        <pre>{{ tasks }}</pre>
-        <pre>{{ steps }}</pre>
     </div>
 </template>
   
 <script>
     import Navbar from './components/Navbar.vue';
     import TaskList from './components/TaskList.vue';
-    import AddTask from './components/AddTask.vue';
 
 
     export default {
         components: {
             Navbar,
             TaskList,
-            AddTask,
         },
         data() {
             return {
@@ -57,9 +40,6 @@
                 steps: [],
                 incompletedTask: [],
                 completedTask: [],
-                openAddTask: false,
-                selectedTask: null,
-                toggleTaskPanel: false,
             }
         },
         async mounted() {
@@ -67,7 +47,6 @@
                 method: 'GET',
             });
             const data = await response.json();
-            console.log(data.tasks.length);
             for (let i = 0; i < data.tasks.length; i++){
                 if (data.tasks[i].completed){
                     this.completedTask.push(data.tasks[i]);
@@ -106,15 +85,12 @@
                     }
                 }
                 this.tasks = [];
-                console.log(this.tasks);
                 this.tasks = this.incompletedTask.concat(this.completedTask);
                 this.incompletedTask=[];
                 this.completedTask=[];
-                console.log(this.tasks);
             },
 
             async updateTask(task){
-                console.log("Updating task:", task);
                 const response = await fetch(`http://localhost:8000/api/tasks/update/${task.id}/`, {
                     method: 'PUT',
                     body: JSON.stringify({
@@ -132,21 +108,7 @@
                 }
             },
 
-            showAddTask(toggleStatus){
-                console.log("Add Task button clicked");
-                if (toggleStatus === "open"){
-                    this.openAddTask = true;
-                }
-
-                console.log(this.openAddTask);
-            },
-
-            closeAddTask(){
-                this.openAddTask = false;
-            },
-
             async postNewTask(newTask){
-                console.log("Posting new task:", newTask);
                 const response =  await fetch('http://localhost:8000/api/tasks/create/', {
                     method: 'POST',
                     body: JSON.stringify(newTask)
@@ -164,8 +126,6 @@
             },
 
             async addSteps(step){
-                console.log("Emitted add-step received in App.vue");
-                console.log("Adding step:", step);
                 const response =  await fetch(`http://localhost:8000/api/tasks/${step.taskId}/steps/`, {
                     method: 'POST',
                     body: JSON.stringify({
@@ -179,7 +139,6 @@
             },
 
             async deleteStep(step){
-                console.log("Deleting step:", step);
                 await fetch(`http://localhost:8000/api/steps/${step.id}/`, {
                     method: 'DELETE',
                 });
@@ -189,7 +148,6 @@
 
 
             async completeUndoStep(step){
-                console.log("Toggling step completion:", step);
                 const response = await fetch(`http://localhost:8000/api/steps/${step.id}/`, {
                     method: 'PUT',
                     body: JSON.stringify({
