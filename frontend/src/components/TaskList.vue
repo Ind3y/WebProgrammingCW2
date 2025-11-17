@@ -10,7 +10,7 @@
                     aria-expanded="false" 
                     :aria-controls="'task-' + task.id"
                 >
-                    <div class="    justify-content-between">
+                    <div class="justify-content-between">
                         <span :class="{ 'text-decoration-line-through text-muted': task.completed } " style="cursor: pointer;">
                             <strong>
                                 {{ task.title }}
@@ -60,7 +60,7 @@
                         <button class="btn bg-primary btn-sm" @click="updateTask(task)">
                             <p class="text-white mb-0"> Save changes </p>
                         </button>
-                        <button class="btn bg-danger btn-sm" @click="deleteTask(task)">
+                        <button class="btn bg-danger btn-sm"  data-bs-toggle="modal" data-bs-target="#task-deletion" @click="deletingTask = task">
                             <p class="text-white mb-0">Delete Task</p>
                         </button>
                     </div>
@@ -89,56 +89,46 @@
                             </li>
                         </ul>
                     </div>
-
                 </div>
             </div>
-
         </div>
-            <!-- <ul class="list-unstyled h5 list-group w-50 mx-auto mt-4">
-                <li
-                    v-for="(task, index) in tasks"
-                    :key="task.id"
-                    class="justify-content-between align-items-center border-3 accordion-item"
-                    id ="task-accordian"
-                >   
-                    <div class="d-flex gap-3 w-100 align-items-center accordion-item p-2">
-                        <button class="btn btn-hover-red bg-danger btn-sm" @click="deleteTask(task)">
-                            <p class="text-white mb-0">X</p>
-                        </button>
-                        <div class= "list-group-item d-flex justify-content-between align-items-center w-100 border-3 rounded-3 accordion-button" @click="toggleInfoPanel(task)">
-                            <span :class="{ 'text-decoration-line-through text-muted': task.completed } " style="cursor: pointer;">
-                                {{ task.title }}
-                            </span>
-                            
-                            <div class="d-flex align-items-center">
-                                <span class="mx-3" v-if="task.due_date">
-                                    Due: {{ task.due_date }}
-                                </span>
 
-                                <button class ="btn btn-sm btn-success" @click="taskCompleteUndoButton(task)">
-                                    {{ task.completed ? 'Undo' : 'Complete' }}
-                                </button>
-                            </div>
-                        </div>
+        <div class="modal" id="task-deletion">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Delete Task</h4>
                     </div>
-                </li>
-            </ul> -->
+                    <div class="modal-body" v-if="deletingTask">
+                        <p>Are you sure you want to delete the task</p>
+                        <p><strong>{{ deletingTask.title }}</strong>?</p>
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" @click="deleteTask(deletingTask)" data-bs-dismiss="modal">
+                            Delete
+                        </button>
+                        <button class="btn btn-primary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <script>
-    import TaskPanel from './TaskPanel.vue';
     export default{
         props: ['tasks','steps'],
         emits: ["task-complete-undo","delete-task","update-task","add-step","delete-step","complete-undo-step"],
-        components: {
-            TaskPanel
-        },
         data() {
             return {
                 selectedTaskId: null,
                 deleteConfirm: false,
                 newStepDescription: '',
+                deletingTask: null,
             };
         },
         methods: {
@@ -146,7 +136,8 @@
                 this.$emit("task-complete-undo", task);
             },
             deleteTask(task) {
-                this.deleteConfirm = true
+                this.deleteConfirm = true;
+
                 this.$emit("delete-task", task);
             },
             toggleInfoPanel(task) {
@@ -170,7 +161,7 @@
                 console.log("Adding step to task ID" , task_id);
                 console.log("adding description:", this.newStepDescription);
                 this.$emit("add-step", {
-                    taskId: this.task.id,
+                    taskId: task_id,
                     description: this.newStepDescription,
                     completed: false
                 });

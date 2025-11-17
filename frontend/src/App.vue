@@ -34,8 +34,8 @@
                     @complete-undo-step="completeUndoStep"/>
             </div> -->
         </div>
-        <!-- <pre>{{ tasks }}</pre>
-        <pre>{{ steps }}</pre> -->
+        <pre>{{ tasks }}</pre>
+        <pre>{{ steps }}</pre>
     </div>
 </template>
   
@@ -53,7 +53,6 @@
         },
         data() {
             return {
-                title: "To-Do Application",
                 tasks: [],
                 steps: [],
                 incompletedTask: [],
@@ -158,12 +157,10 @@
             },
 
             async deleteTask(task){
-                if (confirm(`Are you sure you want to delete this task: ${task.title}?`)){
-                    await fetch(`http://localhost:8000/api/tasks/${task.id}/`, {
-                        method: 'DELETE',
-                    });
-                    this.tasks = this.tasks.filter(t => t.id !== task.id);
-                }
+                await fetch(`http://localhost:8000/api/tasks/${task.id}/`, {
+                    method: 'DELETE',
+                });
+                this.tasks = this.tasks.filter(t => t.id !== task.id);
             },
 
             async addSteps(step){
