@@ -1,5 +1,5 @@
 <template>
-    <div class = "bg-light">
+    <div >
         <Navbar @Toggle-add-task="showAddTask"/>
         <div class="d-flex" >
             <div class="left-panel flex-fill">
@@ -9,15 +9,17 @@
                     @close-add-task="closeAddTask"
                 />
                 <TaskList 
-                    :tasks="tasks" 
+                    :tasks="tasks"
+                    :steps="steps"
                     @task-complete-undo="completeUndoTask" 
                     @delete-task="deleteTask" 
-                    @toggle-info-panel="showTaskPanel"
+                    @update-task="updateTask"
+                    
                 />
 
             </div>
 
-            <div class="right-panel w-25" v-if="toggleTaskPanel">
+            <!-- <div class="right-panel w-25" v-if="toggleTaskPanel">
                 <TaskPanel 
                     :task="selectedTask"
                     :steps="steps" 
@@ -26,7 +28,7 @@
                     @add-step="addSteps"
                     @delete-step="deleteStep"
                     @complete-undo-step="completeUndoStep"/>
-            </div>
+            </div> -->
         </div>
         <!-- <pre>{{ tasks }}</pre>
         <pre>{{ steps }}</pre> -->
@@ -37,7 +39,6 @@
     import Navbar from './components/Navbar.vue';
     import TaskList from './components/TaskList.vue';
     import AddTask from './components/AddTask.vue';
-    import TaskPanel from './components/TaskPanel.vue';
 
 
     export default {
@@ -45,7 +46,6 @@
             Navbar,
             TaskList,
             AddTask,
-            TaskPanel
         },
         data() {
             return {
@@ -93,6 +93,21 @@
                 if (index !== -1) {
                     this.tasks[index].completed = putResponse.completed;
                 }
+                
+
+                for (let x = 0; x < this.tasks.length ;x++){
+                    if (this.tasks[x].completed){
+                        this.completedTask.push(this.tasks[x]);
+                    } else {
+                        this.incompletedTask.push(this.tasks[x]);
+                    }
+                }
+                this.tasks = [];
+                console.log(this.tasks);
+                this.tasks = this.incompletedTask.concat(this.completedTask);
+                this.incompletedTask=[];
+                this.completedTask=[];
+                console.log(this.tasks);
             },
 
             async updateTask(task){
@@ -121,18 +136,6 @@
                 }
 
                 console.log(this.openAddTask);
-            },
-
-            showTaskPanel(toggleStatus, task){
-                if (toggleStatus === "open"){
-                    this.selectedTask = task;
-                    this.toggleTaskPanel = true;
-                } else if (toggleStatus === "close"){
-                    this.toggleTaskPanel = false;
-                    this.selectedTask = null;
-                }
-                console.log("Task Panel toggled:", this.toggleTaskPanel);
-
             },
 
             closeAddTask(){

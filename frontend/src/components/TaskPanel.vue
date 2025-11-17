@@ -55,26 +55,20 @@
             </ul>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-success" @click="saveTask()">Save</button>
-            <button class="btn btn-secondary" @click="closeTaskInfo()">Close</button>
-        </div>
+        <button class="btn btn-success" @click="saveTask()">Save</button>
     </section>
 </template>
 
 <script>
     export default {
         props: ['task','steps'],
-        emits: ["toggle-info-panel","save-task","add-step","delete-step","complete-undo-step"],
+        emits: ["save-task","add-step","delete-step","complete-undo-step"],
         data() {
             return {
                 newStepDescription: ""
             };
         },
         methods: {
-            closeTaskInfo() {
-                this.$emit("toggle-info-panel", "close");
-            },
             saveTask() {
                 this.$emit("save-task", this.task);
             },
